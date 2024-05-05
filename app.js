@@ -1,4 +1,4 @@
-const BASE_URL = "https://user-list.alphacamp.io";
+ const BASE_URL = "https://user-list.alphacamp.io";
 const INDEX_URL = BASE_URL + "/api/v1/users";
 const SHOW_URL = INDEX_URL + "/:id";
 const dataPanel = document.querySelector("#data-panel");
@@ -7,7 +7,6 @@ let filterUsers = [];
 const searchFrom = document.querySelector("#search-form");
 const USER_PAGE = 20; // 設定每頁顯示 ? 筆資料
 const paginator = document.querySelector("#paginator"); // 分頁器
-
 
 
 
