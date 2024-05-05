@@ -1,0 +1,119 @@
+/* 暗色主題 */
+body.dark-mode {
+  background-color: #333; /* 更改背景顏色 */
+  color: #fff; /* 更改文字顏色 */
+
+  .navbar{
+    background-color: #333
+  }
+
+  .nav-link{
+    color: #fff;
+  }
+
+  .page-link {
+    margin-top: 3rem;
+    background-color: #2b2a2a;
+    color: white;
+  }
+  .navbar-brand {
+    font-size: 26px;
+    font-weight: 700;
+    color: yellow;
+  }
+  .card {
+    background-color: #999999;
+  }
+
+  .modal-content {
+    background-color: #2b2a2a;
+    color: azure;
+  }
+
+  .gameIcon {
+    color: rgb(171, 214, 233);
+    font-size: 20px;
+  }
+}
+
+/* 亮色主題 */
+body.light-mode {
+  background-color: #fff; /* 更改背景顏色 */
+  color: #292929; /* 更改文字顏色 */
+
+  .navbar-brand {
+    font-size: 26px;
+    font-weight: 700;
+    color: blueviolet;
+
+    .gameIcon {
+      color: darkgreen;
+      font-size: 20px;
+    }
+
+    .page-link {
+      margin-top: 3rem;
+    }
+  }
+}
+
+/* ----------- */
+
+.modal-body {
+  display: flex;
+}
+
+#pagination {
+  justify-content: center;
+}
+
+.nav-link {
+  font-size: 18px;
+}
+
+.nav-link:hover {
+  background-color: rgb(158, 230, 184);
+  border-radius: 10%;
+}
+
+.card-img-top:hover {
+  background-color: #cdf5da;
+  border-radius: 50px;
+  transform: scale(1.1); /* 將圖片放大 10% */
+  transition: transform 0.3s ease; /* 添加放大過渡效果 */
+  animation: shake 0.5s ease infinite; /* 調整動畫持續時間 */
+}
+
+/* 移動滑鼠時，改變愛心大小及顏色 */
+.fa-regular:hover {
+  color: red;
+  font-weight: 900;
+  font-size: 28px;
+  transition: transform 0.3s ease; /* 添加放大過渡效果 */
+  animation: shake 0.5s ease infinite; /* 調整動畫持續時間 */
+}
+
+p {
+  font-size: 20px;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-5deg);
+  } /* 搖擺到左側 */
+  40% {
+    transform: rotate(5deg);
+  } /* 搖擺到右側 */
+  60% {
+    transform: rotate(-3deg);
+  } /* 左側搖擺一點 */
+  80% {
+    transform: rotate(3deg);
+  } /* 右側搖擺一點 */
+  100% {
+    transform: rotate(0deg);
+  } /* 回到原始角度 */
+}
