@@ -1,4 +1,4 @@
- const BASE_URL = "https://user-list.alphacamp.io";
+const BASE_URL = "https://user-list.alphacamp.io";
 const INDEX_URL = BASE_URL + "/api/v1/users";
 const SHOW_URL = INDEX_URL + "/:id";
 const dataPanel = document.querySelector("#data-panel");
@@ -7,21 +7,18 @@ let filterUsers = [];
 const searchFrom = document.querySelector("#search-form");
 const USER_PAGE = 20; // 設定每頁顯示 ? 筆資料
 const paginator = document.querySelector("#paginator"); // 分頁器
-
-
-
-// ----
+const themeToggleBtn = document.querySelector("#flexSwitchCheckDefault"); // 切換主題按鈕
 
 // 檢查 localStorage 中是否已經有主題偏好設置，如果沒有就使用默認的主題
 const theme = localStorage.getItem('theme');
 if (theme) {
   document.body.classList.add(theme);
+  theme === 'dark-mode' ? themeToggleBtn.checked = true : themeToggleBtn.checked = false;
 } else {
   document.body.classList.add('light-mode');
 }
 
 // 點擊切換主題按鈕時執行切換主題功能
-const themeToggleBtn = document.querySelector("#flexSwitchCheckDefault");
 themeToggleBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
   document.body.classList.toggle('light-mode');
@@ -31,16 +28,20 @@ themeToggleBtn.addEventListener('click', () => {
   localStorage.setItem('theme', currentTheme);
 });
 
-// ---
-
+function getSavedFavoriteList() {
+  return JSON.parse(localStorage.getItem("favoriteUsers")) || [];
+}
 
 // 1.先渲染使用者清單
 function renderUserList(users) {
   let rawHTML = "";
+  const savedList = getSavedFavoriteList();
 
   users.forEach((user) => {
     // 透過變數更改icon對於不同性別的顏色
     const colorStyle = user.gender === "male" ? "color: blue;" : "color: pink;";
+    // 判斷是否在收藏清單中
+    const isFavorite = savedList.some((item) => item.id === user.id);
 
     // 排除顯示null的名單
     if (user.avatar !== null) {
@@ -49,8 +50,8 @@ function renderUserList(users) {
         <div class="card" style="width: 18rem;">
           <img src="${user.avatar}" class="card-img-top" title="查看更多資訊" alt="avatar" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="${user.id}">
           <div class="card-body">
-          <p class="card-text text-center card-title">${user.name}&nbsp;&nbsp;<i class="fa-solid fa-person" style="${colorStyle};"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <i class="fa-regular fa-heart add-favorite" data-id="${user.id}" title="加入收藏名單"></i></p>
+          <p class="card-text text-center card-title">${user.name}&nbsp;&nbsp;<i class="fa-solid fa-person" style="${colorStyle}"></i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <i class="fa-regular fa-heart add-favorite ${isFavorite && 'fa-solid'}" data-id="${user.id}" title="加入收藏名單"></i></p>
           </div>
         </div>
       </div> 
@@ -107,19 +108,26 @@ searchFrom.addEventListener("submit", (e) => {
 });
 
 // 4.做出收藏名單
-function addToFavorite(id) {
-  // 務必要加上JSON.parse轉換格式
-  const list = JSON.parse(localStorage.getItem("favoriteUsers")) || [];
-  const user = users.find((user) => user.id === id);
+function toggleFavorite(id) {
+  const list = getSavedFavoriteList();
+  const index = list.findIndex(user => user.id === id);
 
-  // 重複加入處理
-  if (list.some((user) => user.id === id)) {
-    alert("已在收藏清單中");
-    return;
+  if (index !== -1) {
+    // 如果用戶已在收藏清單中，移除該用戶
+    list.splice(index, 1);
+    alert("用戶已從收藏清單移除");
+  } else {
+    // 如果用戶不在收藏清單中，添加到列表
+    const user = users.find(user => user.id === id);
+    if (user) {
+      list.push(user);
+      alert("用戶已加入收藏清單");
+    } else {
+      alert("用戶不存在");
+      return;
+    }
   }
 
-  // 將資料存進localStorage，務必字串化
-  list.push(user);
   localStorage.setItem("favoriteUsers", JSON.stringify(list));
 }
 
@@ -129,7 +137,7 @@ function addToFavorite(id) {
 function getUserByPage(page) {
   // 計算起始users index
   // 0-11, 12-23, 24-35, ...
-  const data = filterUsers.length? filterUsers : users;
+  const data = filterUsers.length ? filterUsers : users;
   const starIndex = (page - 1) * USER_PAGE;
   return data.slice(starIndex, starIndex + USER_PAGE);
 }
@@ -161,7 +169,7 @@ dataPanel.addEventListener("click", (e) => {
   if (e.target.matches(".card-img-top")) {
     showUserModal(Number(e.target.dataset.id));
   } else if (e.target.matches(".add-favorite")) {
-    addToFavorite(Number(e.target.dataset.id));
+    toggleFavorite(Number(e.target.dataset.id));
     e.target.classList.toggle("fa-solid");
   }
 });
